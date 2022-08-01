@@ -1,7 +1,5 @@
 package nl.andrewlalis.blockbookbinder.control.export;
 
-import lombok.Getter;
-import lombok.Setter;
 import nl.andrewlalis.blockbookbinder.model.Book;
 import nl.andrewlalis.blockbookbinder.view.book.BookPreviewPanel;
 import nl.andrewlalis.blockbookbinder.view.export.ExportToBookDialog;
@@ -10,7 +8,6 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class ExportBookToMinecraftAction extends AbstractAction {
-	@Getter
 	private static final ExportBookToMinecraftAction instance = new ExportBookToMinecraftAction();
 
 	public ExportBookToMinecraftAction() {
@@ -18,7 +15,6 @@ public class ExportBookToMinecraftAction extends AbstractAction {
 		this.putValue(SHORT_DESCRIPTION, "Export the current book to Minecraft.");
 	}
 
-	@Setter
 	private BookPreviewPanel bookPreviewPanel;
 
 	@Override
@@ -35,5 +31,13 @@ public class ExportBookToMinecraftAction extends AbstractAction {
 		}
 		ExportToBookDialog dialog = new ExportToBookDialog(SwingUtilities.getWindowAncestor(this.bookPreviewPanel), bookPreviewPanel.getBook());
 		dialog.setupAndShow();
+	}
+
+	public void setBookPreviewPanel(BookPreviewPanel bookPreviewPanel) {
+		this.bookPreviewPanel = bookPreviewPanel;
+	}
+
+	public static ExportBookToMinecraftAction getInstance() {
+		return instance;
 	}
 }

@@ -1,6 +1,5 @@
 package nl.andrewlalis.blockbookbinder.view.book;
 
-import lombok.Getter;
 import nl.andrewlalis.blockbookbinder.model.Book;
 import nl.andrewlalis.blockbookbinder.model.BookPage;
 import nl.andrewlalis.blockbookbinder.util.IconLoader;
@@ -15,7 +14,6 @@ import java.io.InputStream;
  * A customized panel that's dedicated to showing a book's contents.
  */
 public class BookPreviewPanel extends JPanel {
-	@Getter
 	private Book book;
 	private int currentPage = 0;
 
@@ -132,6 +130,10 @@ public class BookPreviewPanel extends JPanel {
 		ignoreCurrentPageChange = false;
 		this.currentPage = 0;
 		this.displayCurrentPage();
+	}
+
+	public Book getBook() {
+		return book;
 	}
 
 	public void updateCurrentPageModel() {

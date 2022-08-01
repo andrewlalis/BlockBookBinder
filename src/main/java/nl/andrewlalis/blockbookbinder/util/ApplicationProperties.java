@@ -1,7 +1,5 @@
 package nl.andrewlalis.blockbookbinder.util;
 
-import lombok.Getter;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +11,6 @@ import java.util.Properties;
  */
 public class ApplicationProperties {
 	private static ApplicationProperties instance;
-	@Getter
 	private final Properties properties;
 
 	private final Map<String, Integer> intPropCache;
@@ -28,6 +25,10 @@ public class ApplicationProperties {
 			}
 		}
 		return instance;
+	}
+
+	public Properties getProperties() {
+		return properties;
 	}
 
 	/**

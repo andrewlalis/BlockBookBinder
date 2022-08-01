@@ -1,12 +1,9 @@
 package nl.andrewlalis.blockbookbinder.control.source;
 
-import lombok.Getter;
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class ImportSourceAction extends AbstractAction {
-	@Getter
 	private static final ImportSourceAction instance = new ImportSourceAction();
 
 	public ImportSourceAction() {
@@ -17,5 +14,9 @@ public class ImportSourceAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
+	}
+
+	public static ImportSourceAction getInstance() {
+		return instance;
 	}
 }

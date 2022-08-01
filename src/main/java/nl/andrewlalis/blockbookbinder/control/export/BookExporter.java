@@ -1,6 +1,5 @@
 package nl.andrewlalis.blockbookbinder.control.export;
 
-import lombok.Setter;
 import nl.andrewlalis.blockbookbinder.model.Book;
 import nl.andrewlalis.blockbookbinder.util.ApplicationProperties;
 import nl.andrewlalis.blockbookbinder.view.export.ExportStatusPanel;
@@ -33,10 +32,7 @@ public class BookExporter implements Runnable {
 	private final boolean autoPaste;
 	private final int autoPasteDelay;
 
-	@Setter
 	private volatile boolean running;
-
-	@Setter
 	private volatile boolean nextPageRequested;
 
 	private final ExporterKeyListener exporterKeyListener;
@@ -123,6 +119,22 @@ public class BookExporter implements Runnable {
 				lastPageExportedAt = System.currentTimeMillis();
 			}
 		}
+	}
+
+	public boolean isRunning() {
+		return running;
+	}
+
+	public void setRunning(boolean running) {
+		this.running = running;
+	}
+
+	public boolean isNextPageRequested() {
+		return nextPageRequested;
+	}
+
+	public void setNextPageRequested(boolean nextPageRequested) {
+		this.nextPageRequested = nextPageRequested;
 	}
 
 	/**

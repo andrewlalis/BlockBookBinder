@@ -1,17 +1,13 @@
 package nl.andrewlalis.blockbookbinder.control.source;
 
-import lombok.Getter;
-import lombok.Setter;
 import nl.andrewlalis.blockbookbinder.view.SourceTextPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class CleanSourceAction extends AbstractAction {
-	@Getter
 	private final static CleanSourceAction instance = new CleanSourceAction();
 
-	@Setter
 	private SourceTextPanel sourceTextPanel;
 
 	public CleanSourceAction() {
@@ -45,5 +41,13 @@ public class CleanSourceAction extends AbstractAction {
 			sb.append(c);
 		}
 		return sb.toString();
+	}
+
+	public static CleanSourceAction getInstance() {
+		return instance;
+	}
+
+	public void setSourceTextPanel(SourceTextPanel sourceTextPanel) {
+		this.sourceTextPanel = sourceTextPanel;
 	}
 }

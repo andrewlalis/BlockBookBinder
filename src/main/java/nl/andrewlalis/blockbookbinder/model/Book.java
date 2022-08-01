@@ -1,13 +1,11 @@
 package nl.andrewlalis.blockbookbinder.model;
 
-import lombok.Getter;
 import nl.andrewlalis.blockbookbinder.util.ApplicationProperties;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Book {
-	@Getter
 	private final List<BookPage> pages;
 
 	public Book() {
@@ -16,6 +14,10 @@ public class Book {
 
 	public int getPageCount() {
 		return this.pages.size();
+	}
+
+	public List<BookPage> getPages() {
+		return pages;
 	}
 
 	public void addPage(BookPage page) {

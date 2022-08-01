@@ -1,7 +1,5 @@
 package nl.andrewlalis.blockbookbinder.view.export;
 
-import lombok.Getter;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -10,11 +8,8 @@ import java.awt.*;
  * job.
  */
 public class ExportStatusPanel extends JPanel {
-	@Getter
 	private final JLabel statusLabel;
-	@Getter
 	private final JTextArea outputTextArea;
-	@Getter
 	private final JProgressBar exportProgressBar;
 
 	public ExportStatusPanel() {
@@ -34,5 +29,17 @@ public class ExportStatusPanel extends JPanel {
 
 		this.exportProgressBar = new JProgressBar();
 		this.add(this.exportProgressBar, BorderLayout.SOUTH);
+	}
+
+	public JLabel getStatusLabel() {
+		return statusLabel;
+	}
+
+	public JTextArea getOutputTextArea() {
+		return outputTextArea;
+	}
+
+	public JProgressBar getExportProgressBar() {
+		return exportProgressBar;
 	}
 }

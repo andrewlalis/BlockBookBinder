@@ -1,7 +1,5 @@
 package nl.andrewlalis.blockbookbinder.control.source;
 
-import lombok.Getter;
-import lombok.Setter;
 import nl.andrewlalis.blockbookbinder.model.build.BookBuilder;
 import nl.andrewlalis.blockbookbinder.view.SourceTextPanel;
 import nl.andrewlalis.blockbookbinder.view.book.BookPreviewPanel;
@@ -10,12 +8,9 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class CompileFromSourceAction extends AbstractAction {
-	@Getter
 	private static final CompileFromSourceAction instance = new CompileFromSourceAction();
 
-	@Setter
 	private SourceTextPanel sourceTextPanel;
-	@Setter
 	private BookPreviewPanel bookPreviewPanel;
 
 	public CompileFromSourceAction() {
@@ -28,5 +23,17 @@ public class CompileFromSourceAction extends AbstractAction {
 		this.bookPreviewPanel.setBook(
 				new BookBuilder().build(this.sourceTextPanel.getSourceText())
 		);
+	}
+
+	public static CompileFromSourceAction getInstance() {
+		return instance;
+	}
+
+	public void setSourceTextPanel(SourceTextPanel sourceTextPanel) {
+		this.sourceTextPanel = sourceTextPanel;
+	}
+
+	public void setBookPreviewPanel(BookPreviewPanel bookPreviewPanel) {
+		this.bookPreviewPanel = bookPreviewPanel;
 	}
 }
