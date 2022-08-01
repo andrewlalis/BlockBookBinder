@@ -26,7 +26,7 @@ import java.util.logging.Logger;
  * into one's clipboard and pasting the pages.
  */
 public class BookExporter implements Runnable {
-	private final static int START_DELAY = 10;
+	private final static int START_DELAY = 5;
 	private final static int CLIPBOARD_RETRY_DELAY_MS = 100;
 
 	private final Book book;
@@ -48,8 +48,8 @@ public class BookExporter implements Runnable {
 
 	// Some sound clips to play as user feedback.
 	private final Clip beepClip;
-	private final Clip beginningExportClip;
-	private final Clip finishClip;
+//	private final Clip beginningExportClip;
+//	private final Clip finishClip;
 
 	public BookExporter(ExportToBookDialog dialog, ExportStatusPanel exportStatusPanel, Book book, boolean autoPaste, int autoPasteDelay) {
 		this.dialog = dialog;
@@ -58,8 +58,8 @@ public class BookExporter implements Runnable {
 		this.autoPaste = autoPaste;
 		this.autoPasteDelay = autoPasteDelay;
 		this.beepClip = this.loadAudioClip(ApplicationProperties.getProp("export_dialog.beep_sound"));
-		this.beginningExportClip = this.loadAudioClip(ApplicationProperties.getProp("export_dialog.beginning_export"));
-		this.finishClip = this.loadAudioClip(ApplicationProperties.getProp("export_dialog.finish_sound"));
+//		this.beginningExportClip = this.loadAudioClip(ApplicationProperties.getProp("export_dialog.beginning_export"));
+//		this.finishClip = this.loadAudioClip(ApplicationProperties.getProp("export_dialog.finish_sound"));
 		this.clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		this.exporterKeyListener = new ExporterKeyListener(this);
 		if (this.autoPaste) { // Only initialize the robot if we'll need it.
@@ -97,7 +97,7 @@ public class BookExporter implements Runnable {
 					this.initStatusPanel();
 					this.updateStatusLabel("Exporting.");
 					this.initNativeListener();
-					this.playAudioClip(this.beginningExportClip);
+//					this.playAudioClip(this.beginningExportClip);
 				}
 				this.exportPageToClipboard(nextPageToExport);
 				if (this.autoPaste) {
@@ -109,7 +109,7 @@ public class BookExporter implements Runnable {
 				this.updateStatusProgressBar(nextPageToExport);
 				// If we've reached the end of the book, stop the exporter.
 				if (nextPageToExport >= this.book.getPageCount()) {
-					this.playAudioClip(this.finishClip);
+//					this.playAudioClip(this.finishClip);
 					this.addStatusMessage("Export finished: " + this.book.getPageCount() + " pages exported.");
 					if (!this.autoPaste) {
 						this.stopNativeListener();

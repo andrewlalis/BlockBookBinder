@@ -27,6 +27,9 @@ public class BookPreviewPanel extends JPanel {
 	private final JButton firstPageButton;
 	private final JButton lastPageButton;
 
+	private final SpinnerNumberModel currentPageNumberModel;
+	private boolean ignoreCurrentPageChange = false;
+
 	public BookPreviewPanel() {
 		super(new BorderLayout());
 
@@ -51,10 +54,12 @@ public class BookPreviewPanel extends JPanel {
 		this.add(previewPageScrollPane, BorderLayout.CENTER);
 
 		JPanel previewButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		currentPageNumberModel = new SpinnerNumberModel(0, 0, 0, 1);
 		this.firstPageButton = new JButton();
 		this.firstPageButton.setIcon(IconLoader.load("images/page_first.png", 16, 16));
 		this.firstPageButton.addActionListener(e -> {
 			this.currentPage = 0;
+			updateCurrentPageModel();
 			displayCurrentPage();
 		});
 
@@ -63,6 +68,7 @@ public class BookPreviewPanel extends JPanel {
 		this.previousPageButton.addActionListener(e -> {
 			if (currentPage > 0) {
 				currentPage--;
+				updateCurrentPageModel();
 				displayCurrentPage();
 			}
 		});
@@ -72,6 +78,7 @@ public class BookPreviewPanel extends JPanel {
 		this.nextPageButton.addActionListener(e -> {
 			if (currentPage < book.getPageCount() - 1) {
 				currentPage++;
+				updateCurrentPageModel();
 				displayCurrentPage();
 			}
 		});
@@ -79,11 +86,21 @@ public class BookPreviewPanel extends JPanel {
 		this.lastPageButton.setIcon(IconLoader.load("images/page_last.png", 16, 16));
 		this.lastPageButton.addActionListener(e -> {
 			this.currentPage = Math.max(this.book.getPageCount() - 1, 0);
+			updateCurrentPageModel();
 			displayCurrentPage();
+		});
+
+		JSpinner currentPageSpinner = new JSpinner(currentPageNumberModel);
+		currentPageSpinner.addChangeListener(e -> {
+			if (!ignoreCurrentPageChange) {
+				this.currentPage = (int) currentPageNumberModel.getValue() - 1;
+				displayCurrentPage();
+			}
 		});
 
 		previewButtonPanel.add(this.firstPageButton);
 		previewButtonPanel.add(this.previousPageButton);
+		previewButtonPanel.add(currentPageSpinner);
 		previewButtonPanel.add(this.nextPageButton);
 		previewButtonPanel.add(this.lastPageButton);
 		this.add(previewButtonPanel, BorderLayout.SOUTH);
@@ -102,8 +119,25 @@ public class BookPreviewPanel extends JPanel {
 
 	public void setBook(Book book) {
 		this.book = book;
+		ignoreCurrentPageChange = true;
+		if (book.getPageCount() == 0) {
+			currentPageNumberModel.setMinimum(0);
+			currentPageNumberModel.setMaximum(0);
+			currentPageNumberModel.setValue(0);
+		} else {
+			currentPageNumberModel.setMinimum(1);
+			currentPageNumberModel.setMaximum(book.getPageCount());
+			currentPageNumberModel.setValue(1);
+		}
+		ignoreCurrentPageChange = false;
 		this.currentPage = 0;
 		this.displayCurrentPage();
+	}
+
+	public void updateCurrentPageModel() {
+		ignoreCurrentPageChange = true;
+		currentPageNumberModel.setValue(currentPage + 1);
+		ignoreCurrentPageChange = false;
 	}
 
 	public void setCurrentPage(int page) {
