@@ -14,7 +14,7 @@ public class BlockBookBinder {
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
-			FlatDarkLaf.install();
+			FlatDarkLaf.setup();
 			var mainFrame = new MainFrame();
 			mainFrame.setupAndShow();
 		});
