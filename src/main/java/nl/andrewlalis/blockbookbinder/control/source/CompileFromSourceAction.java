@@ -3,8 +3,6 @@ package nl.andrewlalis.blockbookbinder.control.source;
 import lombok.Getter;
 import lombok.Setter;
 import nl.andrewlalis.blockbookbinder.model.build.BookBuilder;
-import nl.andrewlalis.blockbookbinder.model.build.BookBuilder2;
-import nl.andrewlalis.blockbookbinder.util.ApplicationProperties;
 import nl.andrewlalis.blockbookbinder.view.SourceTextPanel;
 import nl.andrewlalis.blockbookbinder.view.book.BookPreviewPanel;
 

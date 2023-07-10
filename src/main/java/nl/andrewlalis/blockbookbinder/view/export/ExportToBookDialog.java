@@ -198,9 +198,11 @@ public class ExportToBookDialog extends JDialog {
 		) {
 			JOptionPane.showMessageDialog(
 					this,
-					"Invalid page range. Please follow the rules below:\n" +
-							"1. First page must be lower or equal to the last page.\n" +
-							"2. Number of pages to export cannot exceed 100.\n",
+					"""
+							Invalid page range. Please follow the rules below:
+							1. First page must be lower or equal to the last page.
+							2. Number of pages to export cannot exceed 100.
+							""",
 					"Invalid Page Range",
 					JOptionPane.WARNING_MESSAGE
 			);
