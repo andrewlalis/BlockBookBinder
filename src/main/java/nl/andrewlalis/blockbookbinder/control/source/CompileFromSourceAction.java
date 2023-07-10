@@ -3,6 +3,7 @@ package nl.andrewlalis.blockbookbinder.control.source;
 import lombok.Getter;
 import lombok.Setter;
 import nl.andrewlalis.blockbookbinder.model.build.BookBuilder;
+import nl.andrewlalis.blockbookbinder.util.ApplicationProperties;
 import nl.andrewlalis.blockbookbinder.view.SourceTextPanel;
 import nl.andrewlalis.blockbookbinder.view.book.BookPreviewPanel;
 
@@ -26,7 +27,11 @@ public class CompileFromSourceAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		this.bookPreviewPanel.setBook(
-				new BookBuilder().build(this.sourceTextPanel.getSourceText())
+				new BookBuilder(
+						ApplicationProperties.getIntProp("book.page_max_lines"),
+						ApplicationProperties.getIntProp("book.page_max_chars"),
+						ApplicationProperties.getIntProp("book.page_max_width")
+				).addText(this.sourceTextPanel.getSourceText()).build()
 		);
 	}
 }

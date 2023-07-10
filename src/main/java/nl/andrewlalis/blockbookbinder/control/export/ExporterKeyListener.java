@@ -5,7 +5,7 @@ import org.jnativehook.keyboard.NativeKeyListener;
 
 /**
  * Native key listener that's used during the export process, to detect when the
- * user performs certain key actions outside of the focus of this program.
+ * user performs certain key actions outside the focus of this program.
  */
 public class ExporterKeyListener implements NativeKeyListener {
 	private final BookExporter exporterRunnable;

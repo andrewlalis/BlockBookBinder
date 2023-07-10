@@ -4,7 +4,6 @@ import nl.andrewlalis.blockbookbinder.BlockBookBinder;
 import nl.andrewlalis.blockbookbinder.control.export.ExportBookToMinecraftAction;
 import nl.andrewlalis.blockbookbinder.control.source.CleanSourceAction;
 import nl.andrewlalis.blockbookbinder.control.source.CompileFromSourceAction;
-import nl.andrewlalis.blockbookbinder.control.source.CompileFromSourceAction2;
 import nl.andrewlalis.blockbookbinder.control.source.ImportSourceAction;
 import nl.andrewlalis.blockbookbinder.util.ApplicationProperties;
 import nl.andrewlalis.blockbookbinder.view.about.AboutDialog;
@@ -45,13 +44,13 @@ public class MainFrame extends JFrame {
 		BookPreviewPanel bookPreviewPanel = new BookPreviewPanel();
 		doublePanel.add(bookPreviewPanel);
 		CompileFromSourceAction.getInstance().setBookPreviewPanel(bookPreviewPanel);
-		CompileFromSourceAction2.getInstance().setBookPreviewPanel(bookPreviewPanel);
+		CompileFromSourceAction.getInstance().setBookPreviewPanel(bookPreviewPanel);
 		ExportBookToMinecraftAction.getInstance().setBookPreviewPanel(bookPreviewPanel);
 
 		SourceTextPanel sourceTextPanel = new SourceTextPanel();
 		doublePanel.add(sourceTextPanel);
 		CompileFromSourceAction.getInstance().setSourceTextPanel(sourceTextPanel);
-		CompileFromSourceAction2.getInstance().setSourceTextPanel(sourceTextPanel);
+		CompileFromSourceAction.getInstance().setSourceTextPanel(sourceTextPanel);
 		CleanSourceAction.getInstance().setSourceTextPanel(sourceTextPanel);
 
 		mainPanel.add(doublePanel, BorderLayout.CENTER);
@@ -71,7 +70,7 @@ public class MainFrame extends JFrame {
 
 		JMenu bookMenu = new JMenu("Book");
 		bookMenu.add(CompileFromSourceAction.getInstance());
-		bookMenu.add(CompileFromSourceAction2.getInstance());
+		bookMenu.add(CompileFromSourceAction.getInstance());
 		bookMenu.add(CleanSourceAction.getInstance());
 		bookMenu.add(ExportBookToMinecraftAction.getInstance());
 		menuBar.add(bookMenu);

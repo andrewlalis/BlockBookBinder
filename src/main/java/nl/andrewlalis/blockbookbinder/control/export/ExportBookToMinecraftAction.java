@@ -27,7 +27,7 @@ public class ExportBookToMinecraftAction extends AbstractAction {
 		if (book == null || book.getPageCount() == 0) {
 			JOptionPane.showMessageDialog(
 					this.bookPreviewPanel.getRootPane(),
-					"Cannot export an empty book.",
+					"Cannot export an empty book.\nChoose \"Compile to Source\" first, and then export.",
 					"Empty Book",
 					JOptionPane.WARNING_MESSAGE
 			);

@@ -3,112 +3,123 @@ package nl.andrewlalis.blockbookbinder.model.build;
 import nl.andrewlalis.blockbookbinder.model.Book;
 import nl.andrewlalis.blockbookbinder.model.BookPage;
 import nl.andrewlalis.blockbookbinder.model.CharWidthMapper;
-import nl.andrewlalis.blockbookbinder.util.ApplicationProperties;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BookBuilder {
-	/**
-	 * Builds a full book of pages from the given source text.
-	 * @param source The source text to convert.
-	 * @return A book containing the source text formatted for a minecraft book.
-	 */
-	public Book build(String source) {
-		final int maxLines = ApplicationProperties.getIntProp("book.page_max_lines");
-		List<String> lines = this.convertSourceToLines(source);
-		Book book = new Book();
-		BookPage page = new BookPage();
-		int currentPageLineCount = 0;
+    private final int MAX_LINES_PER_PAGE;
+    private final int MAX_CHARS_PER_PAGE;
+    private final int MAX_LINE_PIXEL_WIDTH;
 
-		for (String line : lines) {
-			page.addLine(line);
-			currentPageLineCount++;
-			if (currentPageLineCount == maxLines) {
-				book.addPage(page);
-				page = new BookPage();
-				currentPageLineCount = 0;
-			}
-		}
+    private final List<String> lines;
 
-		if (page.hasContent()) {
-			book.addPage(page);
-		}
+    private final StringBuilder lineBuilder;
+    private final StringBuilder wordBuilder;
 
-		return book;
-	}
+    public BookBuilder(int maxLinesPerPage, int maxCharsPerPage, int maxLinePixelWidth) {
+        this.MAX_LINES_PER_PAGE = maxLinesPerPage;
+        this.MAX_CHARS_PER_PAGE = maxCharsPerPage;
+        this.MAX_LINE_PIXEL_WIDTH = maxLinePixelWidth;
+        this.lines = new ArrayList<>();
+        this.lineBuilder = new StringBuilder(64);
+        this.wordBuilder = new StringBuilder(64);
+    }
 
-	/**
-	 * Converts the given source string into a formatted list of lines that can
-	 * be copied to a minecraft book.
-	 * @param source The source string.
-	 * @return A list of lines.
-	 */
-	private List<String> convertSourceToLines(String source) {
-		List<String> lines = new ArrayList<>();
-		final char[] sourceChars = source.toCharArray();
-		final int maxLinePixelWidth = ApplicationProperties.getIntProp("book.page_max_width");
-		int sourceIndex = 0;
-		StringBuilder lineBuilder = new StringBuilder(64);
-		int linePixelWidth = 0;
-		StringBuilder symbolBuilder = new StringBuilder(64);
+    public BookBuilder addText(String text) {
+        int idx = 0;
+        while (idx < text.length()) {
+            final char c = text.charAt(idx++);
+            if (c == '\n') {
+                appendLine();
+            } else if (c == ' ' && lineBuilder.length() == 0) {
+                continue; // Skip spaces at the start of lines.
+            } else if (Character.isWhitespace(c)) {
+                if (CharWidthMapper.getWidth(lineBuilder.toString() + c) > MAX_LINE_PIXEL_WIDTH) {
+                    appendLine();
+                    if (c != ' ') {
+                        lineBuilder.append(c);
+                    }
+                } else {
+                    lineBuilder.append(c);
+                }
+            } else { // Read a continuous word.
+                String word = readWord(text, idx - 1);
+                idx += word.length() - 1;
+                if (CharWidthMapper.getWidth(lineBuilder + word) <= MAX_LINE_PIXEL_WIDTH) {
+                    // Append the word if it'll fit completely.
+                    lineBuilder.append(word);
+                } else if (CharWidthMapper.getWidth(word) <= MAX_LINE_PIXEL_WIDTH) {
+                    // Go to the next line and put the word there, since it'll fit.
+                    appendLine();
+                    lineBuilder.append(word);
+                } else {
+                    // The word is so large that it doesn't fit on a line on its own.
+                    // Find the largest substring of the word that'll fit with a hyphen.
+                    int subStringSize = word.length() - 2;
+                    while (CharWidthMapper.getWidth(word.substring(0, subStringSize) + "-") > MAX_LINE_PIXEL_WIDTH) {
+                        subStringSize--;
+                    }
+                    appendLine();
+                    lineBuilder.append(word, 0, subStringSize).append('-');
+                    appendLine();
+                    lineBuilder.append(word.substring(subStringSize));
+                }
+            }
+        }
+        return this;
+    }
 
-		while (sourceIndex < sourceChars.length) {
-			final char c = sourceChars[sourceIndex];
-			sourceIndex++;
-			symbolBuilder.setLength(0);
-			symbolBuilder.append(c);
-			int symbolWidth = CharWidthMapper.getWidth(c);
+    public Book build() {
+        Book book = new Book();
+        BookPage page = new BookPage();
+        int currentPageLineCount = 0;
+        int currentPageCharCount = 0;
 
-			// Since there's a 1-pixel gap between characters, add it to the width if this isn't the first char.
-			if (lineBuilder.length() > 0) {
-				symbolWidth++;
-			}
+        // Flush anything remaining in lineBuilder to a final line.
+        if (lineBuilder.length() > 0) {
+            appendLine();
+        }
 
-			// If we encounter a non-newline whitespace at the beginning of the line, skip it.
-			if (c == ' ' && lineBuilder.length() == 0) {
-				continue;
-			}
+        for (String line : lines) {
+            if (currentPageCharCount + line.length() > MAX_CHARS_PER_PAGE) {
+                book.addPage(page);
+                page = new BookPage();
+                currentPageLineCount = 0;
+                currentPageCharCount = 0;
+            }
+            page.addLine(line);
+            currentPageLineCount++;
+            currentPageCharCount += line.length();
+            if (currentPageLineCount == MAX_LINES_PER_PAGE) {
+                book.addPage(page);
+                page = new BookPage();
+                currentPageLineCount = 0;
+                currentPageCharCount = 0;
+            }
+        }
+        if (page.hasContent()) {
+            book.addPage(page);
+        }
+        return book;
+    }
 
-			// If we encounter a newline, immediately skip to a new line.
-			if (c == '\n') {
-				lines.add(lineBuilder.toString());
-				lineBuilder.setLength(0);
-				linePixelWidth = 0;
-				continue;
-			}
+    private String readWord(String text, int firstCharIdx) {
+        wordBuilder.setLength(0);
+        int idx = firstCharIdx;
+        while (idx < text.length()) {
+            char c = text.charAt(idx++);
+            if (!Character.isWhitespace(c)) {
+                wordBuilder.append(c);
+            } else {
+                break;
+            }
+        }
+        return wordBuilder.toString();
+    }
 
-			// If we encounter a word, keep accepting characters until we reach the end.
-			if (Character.isLetterOrDigit(c)) {
-				while (
-						sourceIndex < sourceChars.length
-						&& Character.isLetterOrDigit(sourceChars[sourceIndex])
-				) {
-					char nextChar = sourceChars[sourceIndex];
-					symbolBuilder.append(nextChar);
-					symbolWidth += 1 + CharWidthMapper.getWidth(nextChar);
-					sourceIndex++;
-				}
-			}
-
-			final String symbol = symbolBuilder.toString();
-			// Check if we need to go to the next line to fit the symbol.
-			if (linePixelWidth + symbolWidth > maxLinePixelWidth) {
-				lines.add(lineBuilder.toString());
-				lineBuilder.setLength(0);
-				linePixelWidth = 0;
-			}
-
-			// Finally, append the symbol.
-			lineBuilder.append(symbol);
-			linePixelWidth += symbolWidth;
-		}
-
-		// Append any remaining text.
-		if (lineBuilder.length() > 0) {
-			lines.add(lineBuilder.toString());
-		}
-
-		return lines;
-	}
+    private void appendLine() {
+        this.lines.add(this.lineBuilder.toString());
+        this.lineBuilder.setLength(0);
+    }
 }
