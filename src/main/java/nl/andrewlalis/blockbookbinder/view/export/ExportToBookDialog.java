@@ -51,25 +51,32 @@ public class ExportToBookDialog extends JDialog {
 	private Container buildContentPane() {
 		JPanel mainPanel = new JPanel(new BorderLayout());
 
-		JPanel setupPanel = new JPanel();
-		setupPanel.setLayout(new BoxLayout(setupPanel, BoxLayout.PAGE_AXIS));
+		JPanel setupPanel = new JPanel(new GridBagLayout());
+		String[] labels = {"", "First Page", "Last Page", "Auto-Paste Delay (Seconds)"};
 		this.autoCheckbox = new JCheckBox("Auto-paste", true);
 		this.firstPageSpinner = new JSpinner(new SpinnerNumberModel(1, 1, this.book.getPageCount(), 1));
-		JPanel firstPageSpinnerPanel = new JPanel(new BorderLayout());
-		firstPageSpinnerPanel.add(new JLabel("First Page:"), BorderLayout.WEST);
-		firstPageSpinnerPanel.add(this.firstPageSpinner, BorderLayout.CENTER);
 		this.lastPageSpinner = new JSpinner(new SpinnerNumberModel(this.book.getPageCount(), 1, this.book.getPageCount(), 1));
-		JPanel lastPageSpinnerPanel = new JPanel(new BorderLayout());
-		lastPageSpinnerPanel.add(new JLabel("Last Page:"), BorderLayout.WEST);
-		lastPageSpinnerPanel.add(this.lastPageSpinner, BorderLayout.CENTER);
 		this.autoPasteDelaySpinner = new JSpinner(new SpinnerNumberModel(0.2, 0.1, 5.0, 0.1));
-		JPanel autoPasteDelaySpinnerPanel = new JPanel(new BorderLayout());
-		autoPasteDelaySpinnerPanel.add(new JLabel("Auto-Paste Delay (s):"), BorderLayout.WEST);
-		autoPasteDelaySpinnerPanel.add(this.autoPasteDelaySpinner, BorderLayout.CENTER);
-		setupPanel.add(this.autoCheckbox);
-		setupPanel.add(firstPageSpinnerPanel);
-		setupPanel.add(lastPageSpinnerPanel);
-		setupPanel.add(autoPasteDelaySpinnerPanel);
+
+		JComponent[] fields = {autoCheckbox, firstPageSpinner, lastPageSpinner, autoPasteDelaySpinner};
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 0;
+		c.anchor = GridBagConstraints.LINE_START;
+		c.weightx = 0.5;
+		c.fill = GridBagConstraints.NONE;
+		c.insets = new Insets(5, 5, 5, 5);
+		for (String label : labels) {
+			setupPanel.add(new JLabel(label), c);
+			c.gridy++;
+		}
+		c.gridx = 1;
+		c.gridy = 0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		for (JComponent field : fields) {
+			setupPanel.add(field, c);
+			c.gridy++;
+		}
 
 		this.exportStatusPanel = new ExportStatusPanel();
 

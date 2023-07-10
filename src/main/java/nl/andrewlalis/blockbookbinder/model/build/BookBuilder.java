@@ -58,7 +58,7 @@ public class BookBuilder {
 			sourceIndex++;
 			symbolBuilder.setLength(0);
 			symbolBuilder.append(c);
-			int symbolWidth = CharWidthMapper.getInstance().getWidth(c);
+			int symbolWidth = CharWidthMapper.getWidth(c);
 
 			// Since there's a 1-pixel gap between characters, add it to the width if this isn't the first char.
 			if (lineBuilder.length() > 0) {
@@ -86,7 +86,7 @@ public class BookBuilder {
 				) {
 					char nextChar = sourceChars[sourceIndex];
 					symbolBuilder.append(nextChar);
-					symbolWidth += 1 + CharWidthMapper.getInstance().getWidth(nextChar);
+					symbolWidth += 1 + CharWidthMapper.getWidth(nextChar);
 					sourceIndex++;
 				}
 			}

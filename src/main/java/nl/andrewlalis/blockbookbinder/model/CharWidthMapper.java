@@ -17,8 +17,20 @@ public class CharWidthMapper {
 		this.initCharWidthMap();
 	}
 
-	public int getWidth(char c) {
-		return this.charWidthMap.getOrDefault(c, 6);
+	public static int getWidth(char c) {
+		return instance.charWidthMap.getOrDefault(c, 6);
+	}
+
+	public static int getWidth(String s) {
+		if (s.length() == 0) return 0;
+		int width = 0;
+		for (int i = 0; i < s.length(); i++) {
+			width += getWidth(s.charAt(i));
+			if (i < s.length() - 1) {
+				width++;
+			}
+		}
+		return width;
 	}
 
 	private void initCharWidthMap() {

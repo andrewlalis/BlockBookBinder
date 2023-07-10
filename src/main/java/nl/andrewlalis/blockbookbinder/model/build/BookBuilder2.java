@@ -12,13 +12,10 @@ public class BookBuilder2 {
     private final int MAX_CHARS_PER_PAGE;
     private final int MAX_LINE_PIXEL_WIDTH;
 
-    private List<String> lines;
+    private final List<String> lines;
 
-    private StringBuilder lineBuilder;
-    private StringBuilder wordBuilder;
-    private int currentLine;
-    private int currentLinePixelWidth;
-    private int currentWordPixelWidth;
+    private final StringBuilder lineBuilder;
+    private final StringBuilder wordBuilder;
 
     public BookBuilder2(int maxLinesPerPage, int maxCharsPerPage, int maxLinePixelWidth) {
         this.MAX_LINES_PER_PAGE = maxLinesPerPage;
@@ -27,9 +24,6 @@ public class BookBuilder2 {
         this.lines = new ArrayList<>();
         this.lineBuilder = new StringBuilder(64);
         this.wordBuilder = new StringBuilder(64);
-        this.currentLine = 0;
-        this.currentLinePixelWidth = 0;
-        this.currentWordPixelWidth = 0;
     }
 
     public BookBuilder2 addText(String text) {
@@ -40,9 +34,37 @@ public class BookBuilder2 {
                 appendLine();
             } else if (c == ' ' && lineBuilder.length() == 0) {
                 continue; // Skip spaces at the start of lines.
+            } else if (Character.isWhitespace(c)) {
+                if (CharWidthMapper.getWidth(lineBuilder.toString() + c) > MAX_LINE_PIXEL_WIDTH) {
+                    appendLine();
+                    if (c != ' ') {
+                        lineBuilder.append(c);
+                    }
+                } else {
+                    lineBuilder.append(c);
+                }
             } else { // Read a continuous word.
-                int charsRead = readWord(text, idx - 1);
-                idx += charsRead - 1;
+                String word = readWord(text, idx - 1);
+                idx += word.length() - 1;
+                if (CharWidthMapper.getWidth(lineBuilder + word) <= MAX_LINE_PIXEL_WIDTH) {
+                    // Append the word if it'll fit completely.
+                    lineBuilder.append(word);
+                } else if (CharWidthMapper.getWidth(word) <= MAX_LINE_PIXEL_WIDTH) {
+                    // Go to the next line and put the word there, since it'll fit.
+                    appendLine();
+                    lineBuilder.append(word);
+                } else {
+                    // The word is so large that it doesn't fit on a line on its own.
+                    // Find the largest substring of the word that'll fit with a hyphen.
+                    int subStringSize = word.length() - 2;
+                    while (CharWidthMapper.getWidth(word.substring(0, subStringSize) + "-") > MAX_LINE_PIXEL_WIDTH) {
+                        subStringSize--;
+                    }
+                    appendLine();
+                    lineBuilder.append(word, 0, subStringSize).append('-');
+                    appendLine();
+                    lineBuilder.append(word.substring(subStringSize));
+                }
             }
         }
         return this;
@@ -52,14 +74,28 @@ public class BookBuilder2 {
         Book book = new Book();
         BookPage page = new BookPage();
         int currentPageLineCount = 0;
+        int currentPageCharCount = 0;
+
+        // Flush anything remaining in lineBuilder to a final line.
+        if (lineBuilder.length() > 0) {
+            appendLine();
+        }
 
         for (String line : lines) {
+            if (currentPageCharCount + line.length() > MAX_CHARS_PER_PAGE) {
+                book.addPage(page);
+                page = new BookPage();
+                currentPageLineCount = 0;
+                currentPageCharCount = 0;
+            }
             page.addLine(line);
             currentPageLineCount++;
+            currentPageCharCount += line.length();
             if (currentPageLineCount == MAX_LINES_PER_PAGE) {
                 book.addPage(page);
                 page = new BookPage();
                 currentPageLineCount = 0;
+                currentPageCharCount = 0;
             }
         }
         if (page.hasContent()) {
@@ -68,32 +104,22 @@ public class BookBuilder2 {
         return book;
     }
 
-    private int readWord(String text, int firstCharIdx) {
-        currentWordPixelWidth = 0;
+    private String readWord(String text, int firstCharIdx) {
         wordBuilder.setLength(0);
         int idx = firstCharIdx;
         while (idx < text.length()) {
             char c = text.charAt(idx++);
             if (!Character.isWhitespace(c)) {
-                currentWordPixelWidth += CharWidthMapper.getInstance().getWidth(c) + 1;
                 wordBuilder.append(c);
-
-                // If we notice that our word will cause the current line to exceed max width, go to a newline.
-                if (currentLinePixelWidth + currentWordPixelWidth > MAX_LINE_PIXEL_WIDTH) {
-                    appendLine();
-                }
             } else {
                 break;
             }
         }
-        String word = wordBuilder.toString();
-        return word.length();
+        return wordBuilder.toString();
     }
 
     private void appendLine() {
         this.lines.add(this.lineBuilder.toString());
         this.lineBuilder.setLength(0);
-        this.currentLine++;
-        this.currentLinePixelWidth = 0;
     }
 }
