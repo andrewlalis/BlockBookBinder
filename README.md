@@ -5,9 +5,11 @@ This application was developed in order to make the production of written books 
 
 ## Using Block Book Binder
 
-To get started, look for the [**Releases**](https://github.com/andrewlalis/BlockBookBinder/releases) section on this page, and find the latest release. Download the executable JAR file and you're ready to go. Simply paste some plain text into the _Source_ panel on the right-hand side, and press the button _Convert to Book_ to process that text into a series of pages which will appear on the left-hand side.
+To get started, look for the [**Releases**](https://github.com/andrewlalis/BlockBookBinder/releases) section on this page, and find the latest release. Download the executable JAR file, and make sure you have Java version 17 or higher installed to run it.
 
-Once you're happy with how the pages are formatted, you can click the _Export_ button to begin exporting pages to your clipboard. Once you give an affirmative response to the confirmation popup that appears, the first page will be loaded into your clipboard. You can then use `CTRL + V` to paste the page into your book. Each time you do, the program will take about a second to load the next page into your clipboard, so that you can paste it without even having to leave your game.
+Start the program, and you'll be greeted with a window that has **Book Preview** and **Source Text** panels. Enter the text you'd like to work with into the **Source Text** panel. In the top menu under **Book**, you'll find a **Clean Source** button, which will remove extra whitespace from the text to make it more friendly for Minecraft's cramped style. You'll also find **Compile from Source**, which will compile your source text into a book in the **Book Preview** panel.
+
+Once you're happy with how the pages are formatted, you can click the **Export to Minecraft** button to begin exporting pages to your clipboard.
 
 ## Demo Video on YouTube
 https://youtu.be/Mu7Hv1na7Sw

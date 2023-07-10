@@ -44,14 +44,13 @@ public class MainFrame extends JFrame {
 		BookPreviewPanel bookPreviewPanel = new BookPreviewPanel();
 		doublePanel.add(bookPreviewPanel);
 		CompileFromSourceAction.getInstance().setBookPreviewPanel(bookPreviewPanel);
-		CompileFromSourceAction.getInstance().setBookPreviewPanel(bookPreviewPanel);
 		ExportBookToMinecraftAction.getInstance().setBookPreviewPanel(bookPreviewPanel);
 
 		SourceTextPanel sourceTextPanel = new SourceTextPanel();
 		doublePanel.add(sourceTextPanel);
 		CompileFromSourceAction.getInstance().setSourceTextPanel(sourceTextPanel);
-		CompileFromSourceAction.getInstance().setSourceTextPanel(sourceTextPanel);
 		CleanSourceAction.getInstance().setSourceTextPanel(sourceTextPanel);
+		ImportSourceAction.getInstance().setSourceTextPanel(sourceTextPanel);
 
 		mainPanel.add(doublePanel, BorderLayout.CENTER);
 
@@ -69,7 +68,6 @@ public class MainFrame extends JFrame {
 		menuBar.add(fileMenu);
 
 		JMenu bookMenu = new JMenu("Book");
-		bookMenu.add(CompileFromSourceAction.getInstance());
 		bookMenu.add(CompileFromSourceAction.getInstance());
 		bookMenu.add(CleanSourceAction.getInstance());
 		bookMenu.add(ExportBookToMinecraftAction.getInstance());
