@@ -1,6 +1,5 @@
 package nl.andrewlalis.blockbookbinder.view;
 
-import nl.andrewlalis.blockbookbinder.BlockBookBinder;
 import nl.andrewlalis.blockbookbinder.control.export.ExportBookToMinecraftAction;
 import nl.andrewlalis.blockbookbinder.control.source.CleanSourceAction;
 import nl.andrewlalis.blockbookbinder.control.source.CompileFromSourceAction;
