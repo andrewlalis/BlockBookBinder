@@ -8,6 +8,7 @@ import nl.andrewlalis.blockbookbinder.view.SourceTextPanel;
 import nl.andrewlalis.blockbookbinder.view.book.BookPreviewPanel;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class CompileFromSourceAction extends AbstractAction {
@@ -26,12 +27,22 @@ public class CompileFromSourceAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		this.bookPreviewPanel.setBook(
+		String text = this.sourceTextPanel.getSourceText();
+		if (text.isBlank()) {
+			JOptionPane.showMessageDialog(
+					SwingUtilities.getWindowAncestor((Component) e.getSource()),
+					"No source text to compile.\nEnter some text into the \"Source Text\" panel first.",
+					"No Source Text",
+					JOptionPane.WARNING_MESSAGE
+			);
+		} else {
+			this.bookPreviewPanel.setBook(
 				new BookBuilder(
-						ApplicationProperties.getIntProp("book.page_max_lines"),
-						ApplicationProperties.getIntProp("book.page_max_chars"),
-						ApplicationProperties.getIntProp("book.page_max_width")
+					ApplicationProperties.getIntProp("book.page_max_lines"),
+					ApplicationProperties.getIntProp("book.page_max_chars"),
+					ApplicationProperties.getIntProp("book.page_max_width")
 				).addText(this.sourceTextPanel.getSourceText()).build()
-		);
+			);
+		}
 	}
 }

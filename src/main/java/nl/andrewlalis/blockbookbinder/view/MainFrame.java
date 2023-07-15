@@ -22,7 +22,7 @@ public class MainFrame extends JFrame {
 				ApplicationProperties.getIntProp("frame.default_width"),
 				ApplicationProperties.getIntProp("frame.default_height")
 		));
-		this.setTitle(ApplicationProperties.getProp("frame.title") + " Version " + BlockBookBinder.VERSION);
+		this.setTitle(ApplicationProperties.getProp("frame.title") + " Version " + ApplicationProperties.getProp("version"));
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		final URL iconUrl = this.getClass().getClassLoader().getResource("images/book_and_quill.png");
 		if (iconUrl != null) {
